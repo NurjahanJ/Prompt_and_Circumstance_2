@@ -1,8 +1,11 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePromptCount } from '../contexts/PromptCountContext';
+import BatteryIcon from './BatteryIcon';
 
 const Header = () => {
   const { darkMode, toggleDarkMode } = useTheme();
+  const { promptCount, resetCount } = usePromptCount();
 
   return (
     <header className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b py-3 px-4 flex justify-between items-center`}>
@@ -19,7 +22,24 @@ const Header = () => {
         <h1 className={`text-xl font-semibold text-center ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>ChatGPT</h1>
       </div>
       
-      <div className="flex-1 flex justify-end gap-2">
+      <div className="flex-1 flex justify-end gap-2 items-center">
+        {/* Battery Icon */}
+        <div className="mr-2">
+          <BatteryIcon promptCount={promptCount} />
+        </div>
+        
+        {/* Reset prompt count button */}
+        <button
+          onClick={resetCount}
+          className={`p-2 rounded-md ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+          aria-label="Reset prompt count"
+          title="Reset prompt count"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </button>
+        
         {/* Theme toggle button */}
         <button 
           onClick={toggleDarkMode} 

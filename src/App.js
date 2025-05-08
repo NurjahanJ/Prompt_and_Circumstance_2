@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import { useTheme } from './contexts/ThemeContext';
+import { usePromptCount } from './contexts/PromptCountContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
 import { sendMessage as sendApiMessage } from './services/api';
@@ -10,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const { darkMode } = useTheme();
+  const { incrementCount, hasReachedLimit } = usePromptCount();
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -34,6 +36,9 @@ function App() {
     
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setLoading(true);
+    
+    // Increment the prompt count
+    incrementCount();
     
     try {
       // Call the actual OpenAI API
