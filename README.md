@@ -5,6 +5,7 @@ A modern, responsive ChatGPT interface built with React and Tailwind CSS featuri
 ## Features
 
 - Clean, minimalist chat interface inspired by ChatGPT
+- Integration with OpenAI's API for real AI responses
 - Dark mode support with system preference detection
 - Persistent theme preference using localStorage
 - Responsive design for all device sizes
@@ -29,7 +30,17 @@ npm install
 yarn install
 ```
 
-3. Start the development server:
+3. Set up your API key:
+   - Create a `.env` file in the root directory
+   - Add your OpenAI API key to the `.env` file (see `.env.example` for format)
+   - Never commit your `.env` file to version control (it's already in `.gitignore`)
+
+```
+# In your .env file
+REACT_APP_OPENAI_API_KEY=your_openai_api_key_here
+```
+
+4. Start the development server:
 
 ```bash
 npm start
@@ -37,13 +48,15 @@ npm start
 yarn start
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ## Technologies Used
 
 - React.js
 - Tailwind CSS
 - Context API for state management
+- OpenAI API for chat functionality
+- Environment variables for secure API key storage
 
 ## License
 

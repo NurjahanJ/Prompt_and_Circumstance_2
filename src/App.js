@@ -3,6 +3,7 @@ import Header from './components/Header';
 import { useTheme } from './contexts/ThemeContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
+import { sendMessage as sendApiMessage } from './services/api';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -34,10 +35,10 @@ function App() {
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setLoading(true);
     
-    // Simulate API call with a delay
-    setTimeout(() => {
-      // Mock response from assistant
-      const response = getAssistantResponse(message);
+    try {
+      // Call the actual OpenAI API
+      const response = await sendApiMessage(message);
+      
       const assistantMessage = {
         id: Date.now() + 1,
         text: response,
@@ -46,22 +47,19 @@ function App() {
       };
       
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
+    } catch (error) {
+      // Handle API errors
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: `Error: ${error.message || 'Something went wrong. Please try again.'}`,
+        sender: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+      
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+    } finally {
       setLoading(false);
-    }, 1000);
-  };
-
-  // Mock function to generate assistant responses
-  const getAssistantResponse = (message) => {
-    const responses = [
-      "I'm an AI assistant, how can I help you today?",
-      "That's an interesting question. Let me think about that...",
-      "I'm here to assist with any questions you might have.",
-      "I understand your question. Here's what I know about that topic...",
-      "Thanks for asking! I'd be happy to help with that.",
-    ];
-    
-    // For demo purposes, just return a random response
-    return responses[Math.floor(Math.random() * responses.length)];
+    }
   };
 
   return (
