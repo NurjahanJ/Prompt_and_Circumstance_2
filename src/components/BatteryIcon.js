@@ -8,9 +8,6 @@ import { useTheme } from '../contexts/ThemeContext';
  */
 const BatteryIcon = ({ promptCount }) => {
   const { darkMode } = useTheme();
-  const [animate, setAnimate] = useState(false);
-  const [prevCount, setPrevCount] = useState(promptCount);
-  
   // Define thresholds for battery levels
   const THRESHOLDS = {
     GREEN: { min: 0, max: 3 },
@@ -19,15 +16,6 @@ const BatteryIcon = ({ promptCount }) => {
     EMPTY: { min: 11, max: Infinity }
   };
   
-  // Trigger animation when prompt count changes
-  useEffect(() => {
-    if (promptCount !== prevCount) {
-      setAnimate(true);
-      const timer = setTimeout(() => setAnimate(false), 1000);
-      setPrevCount(promptCount);
-      return () => clearTimeout(timer);
-    }
-  }, [promptCount, prevCount]);
   
   // Calculate battery level based on prompt count
   const getBatteryLevel = () => {
@@ -87,7 +75,7 @@ const BatteryIcon = ({ promptCount }) => {
   // Get battery segments
   const getBatterySegments = () => {
     const segments = [];
-    const totalSegments = 4;
+    const totalSegments = 5;
     const filledSegments = Math.ceil((percentage / 100) * totalSegments);
     
     for (let i = 0; i < totalSegments; i++) {
@@ -100,13 +88,13 @@ const BatteryIcon = ({ promptCount }) => {
       );
     }
     
-    return segments; // No reverse - fill from top
+    return segments.reverse(); // Fill from bottom to top
   };
   
   return (
     <div className="flex items-center group">
       <div 
-        className={`relative mr-3 ${animate ? 'animate-pulse' : ''}`} 
+        className="relative mr-3"
         title={getStatusText()}
       >
         {/* Battery tip (now at bottom) */}
@@ -116,7 +104,7 @@ const BatteryIcon = ({ promptCount }) => {
         <div 
           className={`w-10 h-16 border-2 ${borderColor} ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} 
             rounded-md overflow-hidden shadow-lg transition-all duration-300 ease-in-out 
-            ${animate ? glow : ''} ${isEmpty ? 'animate-pulse' : ''} -mt-[2px]`}
+            -mt-[2px]`}
         >
           {/* Battery segments */}
           <div className="flex flex-col justify-start h-full py-1">
@@ -126,14 +114,14 @@ const BatteryIcon = ({ promptCount }) => {
           {/* Battery indicator for high count */}
           {isEmpty && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">
-              <span className={`text-xl font-bold ${darkMode ? 'text-yellow-300' : 'text-yellow-500'} animate-pulse`}>!</span>
+              <span className={`text-xl font-bold ${darkMode ? 'text-yellow-300' : 'text-yellow-500'}`}>!</span>
             </div>
           )}
         </div>
         
         {/* Battery glow effect */}
         <div 
-          className={`absolute -inset-1 ${color} opacity-0 group-hover:opacity-20 rounded-lg blur-md transition-opacity duration-300`}
+          className={`absolute -inset-1 ${color} opacity-0 ${promptCount > 0 ? 'group-hover:opacity-20' : ''} rounded-lg blur-md transition-opacity duration-300`}
         ></div>
       </div>
       
