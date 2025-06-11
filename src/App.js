@@ -5,6 +5,7 @@ import { usePromptCount } from './contexts/PromptCountContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
 import { sendMessage as sendApiMessage } from './services/api';
+import { usePromptLogger } from './hooks/usePromptLogger';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -12,6 +13,7 @@ function App() {
   const messagesEndRef = useRef(null);
   const { darkMode } = useTheme();
   const { incrementCount, hasReachedLimit } = usePromptCount();
+  const { logPrompt, isLogging, logError } = usePromptLogger();
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -52,6 +54,10 @@ function App() {
       };
       
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      
+      // Log the interaction to Supabase using our custom hook
+      await logPrompt(message, response);
+      
     } catch (error) {
       // Handle API errors
       const errorMessage = {
