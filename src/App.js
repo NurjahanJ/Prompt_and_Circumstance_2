@@ -5,6 +5,7 @@ import { usePromptCount } from './contexts/PromptCountContext';
 import ChatHistory from './components/ChatHistory';
 import ChatInput from './components/ChatInput';
 import { sendMessage as sendApiMessage } from './services/api';
+import { logPromptInteraction } from './services/convexService';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -54,6 +55,13 @@ function App() {
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
       
       // Message sent successfully
+      // Log the prompt interaction to Convex (silently handle any errors)
+      try {
+        logPromptInteraction(message, response);
+      } catch (loggingError) {
+        // Silent fail - don't disrupt user experience if logging fails
+        console.error('Failed to log prompt interaction:', loggingError);
+      }
       
     } catch (error) {
       // Handle API errors
