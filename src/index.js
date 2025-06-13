@@ -5,15 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { PromptCountProvider } from './contexts/PromptCountContext';
+import { ConvexProvider } from './components/convex/ConvexProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <PromptCountProvider>
-        <App />
-      </PromptCountProvider>
-    </ThemeProvider>
+    <ConvexProvider>
+      <ThemeProvider>
+        <PromptCountProvider>
+          <App />
+        </PromptCountProvider>
+      </ThemeProvider>
+    </ConvexProvider>
   </React.StrictMode>
 );
 
