@@ -35,15 +35,22 @@ export const logPromptInteraction = async (prompt, response) => {
     const truncatedResponse = response.length > maxFieldLength ? 
       response.substring(0, maxFieldLength) + '... [truncated]' : response;
     
+    console.log('Attempting to log prompt interaction to Convex...', {
+      userId,
+      promptLength: truncatedPrompt.length,
+      responseLength: truncatedResponse.length,
+      timestamp
+    });
+    
     // Log the interaction to Convex
-    await convex.mutation(api.logPrompt.logPromptInteraction, {
+    const result = await convex.mutation(api.logPrompt.logPromptInteraction, {
       userId,
       prompt: truncatedPrompt,
       response: truncatedResponse,
       timestamp,
     });
     
-    console.log('Prompt interaction logged successfully');
+    console.log('Prompt interaction logged successfully with ID:', result);
   } catch (error) {
     // Silently fail to not disrupt user experience
     console.error('Failed to log prompt interaction:', error);

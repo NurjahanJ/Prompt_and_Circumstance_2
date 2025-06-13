@@ -16,15 +16,29 @@ export const logPromptInteraction = mutation({
   
   // Function implementation
   handler: async (ctx: any, args: { userId: string; prompt: string; response: string; timestamp: string }) => {
-    // Insert the prompt interaction into the database
-    const id = await ctx.db.insert("promptInteractions", {
+    console.log("Convex: Received prompt interaction", { 
       userId: args.userId,
-      prompt: args.prompt,
-      response: args.response,
-      timestamp: args.timestamp,
+      promptLength: args.prompt.length,
+      responseLength: args.response.length,
+      timestamp: args.timestamp 
     });
     
-    // Return the ID of the newly created record
-    return id;
+    try {
+      // Insert the prompt interaction into the database
+      const id = await ctx.db.insert("promptInteractions", {
+        userId: args.userId,
+        prompt: args.prompt,
+        response: args.response,
+        timestamp: args.timestamp,
+      });
+      
+      console.log("Convex: Successfully inserted prompt interaction with ID:", id);
+      
+      // Return the ID of the newly created record
+      return id;
+    } catch (error) {
+      console.error("Convex: Error inserting prompt interaction:", error);
+      throw error; // Re-throw to ensure the client knows there was an error
+    }
   },
 });
